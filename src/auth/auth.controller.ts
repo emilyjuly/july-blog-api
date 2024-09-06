@@ -3,8 +3,9 @@ import {
   Controller,
   Get,
   Post,
-  Request,
+  Headers,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -24,9 +25,13 @@ export class AuthController {
     return this.authService.login(createAuthDto);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @Public()
+  @Get('validate-token')
+  async getUserFromToken(@Headers('Authorization') authHeader: string) {
+    const token = authHeader?.split(' ')[1];
+    if (!token) {
+      throw new UnauthorizedException('Token não fornecido');
+    }
+    return this.authService.getUserFromToken(token);
   }
 }

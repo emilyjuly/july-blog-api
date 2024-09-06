@@ -11,15 +11,39 @@ export class AuthService {
   ) {}
 
   async login(createAuthDto: CreateAuthDto): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOneByUsername(
-      createAuthDto.username,
-    );
-    if (user?.password !== createAuthDto.password) {
-      throw new UnauthorizedException();
+    try {
+      const user = await this.usersService.findOneByUsername(
+        createAuthDto.username,
+      );
+      if (user?.password !== createAuthDto.password) {
+        throw new UnauthorizedException(
+          'Nome de usuário ou senha estão incorretos.',
+        );
+      }
+      const payload = { sub: user.id, username: user.username };
+      return {
+        access_token: await this.jwtService.signAsync(payload),
+      };
+    } catch (error) {
+      throw new UnauthorizedException(
+        'Nome de usuário ou senha estão incorretos.',
+      );
     }
-    const payload = { sub: user.id, username: user.username };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+  }
+
+  async getUserFromToken(token: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      console.log(payload);
+      const user = await this.usersService.findOne(payload.sub);
+      if (!user) {
+        throw new UnauthorizedException('Usuário não encontrado');
+      }
+      return user;
+    } catch (err) {
+      throw new UnauthorizedException('Token inválido ou expirado');
+    }
   }
 }
