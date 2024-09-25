@@ -1,21 +1,41 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserEntity } from './entities/user.entity';
 
-type User = {
-  id: number;
-  email: string;
-  username: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
-};
+export const USERNAME_KEY: string = 'username';
+export const EMAIL_KEY: string = 'email';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const { username, email } = createUserDto;
+
+    const existingUser = await Promise.all([
+      this.findOneByUsernameOrEmail(username, USERNAME_KEY),
+      this.findOneByUsernameOrEmail(email, EMAIL_KEY),
+    ]);
+
+    const [existingUsername, existingEmail] = existingUser;
+
+    if (existingUsername && existingEmail) {
+      throw new NotAcceptableException(
+        'Já existe um usuário com esse nome de usuário e e-mail.',
+      );
+    }
+
+    if (existingUsername && !existingEmail) {
+      throw new NotAcceptableException(
+        'Já existe um usuário com esse nome de usuário.',
+      );
+    }
+
+    if (existingEmail && !existingUsername) {
+      throw new NotAcceptableException('Já existe um usuário com esse e-mail.');
+    }
+
     return this.prisma.user.create({ data: createUserDto });
   }
 
@@ -37,14 +57,26 @@ export class UsersService {
     return userWithoutPassword;
   }
 
-  async findOneByUsername(username: string) {
-    const user = await this.prisma.user.findUnique({ where: { username } });
-
-    if (!user) {
-      throw new Error('User not found');
+  async findOneByUsernameOrEmail(
+    data: string,
+    key: string,
+  ): Promise<UserEntity | false> {
+    let userFound: UserEntity | null = null;
+    if (key === EMAIL_KEY) {
+      userFound = await this.prisma.user.findUnique({ where: { email: data } });
+    } else if (key === USERNAME_KEY) {
+      userFound = await this.prisma.user.findUnique({
+        where: { username: data },
+      });
+    } else {
+      throw new Error('Invalid key provided');
     }
 
-    return user;
+    if (!userFound) {
+      return false;
+    }
+
+    return userFound;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

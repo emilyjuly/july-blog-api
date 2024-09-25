@@ -17,6 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
+import { Public } from 'src/decorators/public.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Users')
@@ -24,7 +25,8 @@ import { UserEntity } from './entities/user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
+  @Public()
+  @Post('create')
   @ApiCreatedResponse({ type: UserEntity })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);

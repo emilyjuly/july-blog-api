@@ -1,7 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { USERNAME_KEY } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -10,20 +15,27 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(createAuthDto: CreateAuthDto): Promise<{ access_token: string }> {
+  async login(
+    createAuthDto: CreateAuthDto,
+  ): Promise<{ access_token: string } | null> {
     try {
-      const user = await this.usersService.findOneByUsername(
+      const user = await this.usersService.findOneByUsernameOrEmail(
         createAuthDto.username,
+        USERNAME_KEY,
       );
-      if (user?.password !== createAuthDto.password) {
-        throw new UnauthorizedException(
-          'Nome de usuário ou senha estão incorretos.',
-        );
+      if (user) {
+        if (user?.password !== createAuthDto.password) {
+          throw new UnauthorizedException(
+            'Nome de usuário ou senha estão incorretos.',
+          );
+        }
+        const payload = { sub: user.id, username: user.username };
+        return {
+          access_token: await this.jwtService.signAsync(payload),
+        };
+      } else {
+        return null;
       }
-      const payload = { sub: user.id, username: user.username };
-      return {
-        access_token: await this.jwtService.signAsync(payload),
-      };
     } catch (error) {
       throw new UnauthorizedException(
         'Nome de usuário ou senha estão incorretos.',
@@ -36,10 +48,9 @@ export class AuthService {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
-      console.log(payload);
       const user = await this.usersService.findOne(payload.sub);
       if (!user) {
-        throw new UnauthorizedException('Usuário não encontrado');
+        throw new NotFoundException('Usuário não encontrado');
       }
       return user;
     } catch (err) {

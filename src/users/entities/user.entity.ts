@@ -20,7 +20,7 @@ export class UserEntity implements User {
   role: Role;
 
   @ApiProperty()
-  posts: CreatePostDto[];
+  posts?: CreatePostDto[];
 
   @ApiProperty()
   createdAt: Date;

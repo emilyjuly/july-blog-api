@@ -10,7 +10,6 @@ import {
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { AuthGuard } from './auth.guard';
 import { Public } from 'src/decorators/public.decorator';
 
 @ApiBearerAuth()
