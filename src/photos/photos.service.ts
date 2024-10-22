@@ -7,8 +7,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class PhotosService {
   constructor(private prisma: PrismaService) {}
 
-  create(createPhotoDto: CreatePhotoDto) {
-    return this.prisma.photo.create({ data: createPhotoDto });
+  create(file: Express.Multer.File) {
+    const { originalname, mimetype, size, filename, path } = file;
+
+    return this.prisma.photo.create({
+      data: {
+        filename: originalname,
+        mimetype,
+        size,
+      },
+    });
   }
 
   findAll() {

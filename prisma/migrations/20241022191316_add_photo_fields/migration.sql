@@ -40,7 +40,10 @@ CREATE TABLE "Comment" (
 -- CreateTable
 CREATE TABLE "Photo" (
     "id" SERIAL NOT NULL,
-    "url" TEXT NOT NULL,
+    "filename" TEXT NOT NULL,
+    "mimetype" TEXT NOT NULL,
+    "size" INTEGER NOT NULL,
+    "postId" INTEGER,
 
     CONSTRAINT "Photo_pkey" PRIMARY KEY ("id")
 );
@@ -63,6 +66,9 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Post_photoId_key" ON "Post"("photoId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Photo_postId_key" ON "Photo"("postId");
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_photoId_fkey" FOREIGN KEY ("photoId") REFERENCES "Photo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -50,9 +50,11 @@ model Comment {
 }
 
 model Photo {
-  id   Int    @id @default(autoincrement())
-  url  String
-  post Post?
+  id       Int    @id @default(autoincrement())
+  filename String
+  mimetype String
+  size     Int
+  post     Post?
 }
 
 model Like {
