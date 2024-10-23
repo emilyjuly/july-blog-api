@@ -36,10 +36,10 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
-  @Get(':id')
-  @ApiOkResponse({ type: PostEntity })
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+  @Get(':userId')
+  @ApiOkResponse({ type: [PostEntity] })
+  findOne(@Param('userId') userId: string) {
+    return this.postsService.findByUserId(+userId);
   }
 
   @Patch(':id')

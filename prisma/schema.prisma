@@ -54,6 +54,7 @@ model Photo {
   filename String
   mimetype String
   size     Int
+  path     String
   post     Post?
 }
 

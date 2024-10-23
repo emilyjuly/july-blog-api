@@ -1,11 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express'; // Importar Express
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule); // Usando NestExpressApplication
 
   app.enableCors();
+  app.useStaticAssets('uploads', { prefix: '/uploads' });
 
   const config = new DocumentBuilder()
     .addBearerAuth()

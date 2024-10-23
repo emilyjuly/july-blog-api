@@ -15,8 +15,13 @@ export class PostsService {
     return this.prisma.post.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.post.findUnique({ where: { id } });
+  findByUserId(userId: number) {
+    return this.prisma.post.findMany({
+      where: { userId },
+      include: {
+        Photo: true,
+      },
+    });
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {

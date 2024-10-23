@@ -21,6 +21,7 @@ import {
 import { PhotoEntity } from './entities/photo.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostsService } from 'src/posts/posts.service';
+import { multerConfig } from 'multer.config';
 
 @ApiBearerAuth()
 @ApiTags('Photos')
@@ -32,7 +33,7 @@ export class PhotosController {
   ) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', multerConfig))
   @ApiCreatedResponse({ type: PhotoEntity })
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,

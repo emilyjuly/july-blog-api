@@ -8,9 +8,26 @@ import { PostsModule } from './posts/posts.module';
 import { PhotosModule } from './photos/photos.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { multerConfig } from 'multer.config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, PostsModule, PhotosModule, CommentsModule, LikesModule],
+  imports: [
+    MulterModule.register(multerConfig),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
+    PrismaModule,
+    UsersModule,
+    AuthModule,
+    PostsModule,
+    PhotosModule,
+    CommentsModule,
+    LikesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -5,5 +5,14 @@ export class PhotoEntity {
   id: number;
 
   @ApiProperty()
-  url: string;
+  filename: string;
+
+  @ApiProperty()
+  mimetype: string;
+
+  @ApiProperty()
+  size: number;
+
+  @ApiProperty()
+  path: string;
 }

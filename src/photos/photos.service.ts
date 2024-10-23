@@ -15,6 +15,7 @@ export class PhotosService {
         filename: originalname,
         mimetype,
         size,
+        path,
       },
     });
   }
