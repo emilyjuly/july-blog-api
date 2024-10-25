@@ -20,6 +20,8 @@ export class PostsService {
       where: { userId },
       include: {
         Photo: true,
+        Comments: true,
+        Likes: true,
       },
     });
   }

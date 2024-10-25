@@ -38,12 +38,14 @@ export class PhotosController {
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Body('userId') userId: number,
+    @Body('username') username: string,
     @Body('caption') caption?: string,
   ) {
     const photo = await this.photosService.create(file);
     const post = await this.postsService.create({
       photoId: photo.id,
       userId: +userId,
+      username: username,
       caption,
     });
 

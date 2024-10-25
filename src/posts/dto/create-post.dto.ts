@@ -9,4 +9,7 @@ export class CreatePostDto {
 
   @ApiProperty({ required: true })
   userId: number;
+
+  @ApiProperty({ required: true })
+  username: string;
 }

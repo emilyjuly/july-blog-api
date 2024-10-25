@@ -1,18 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-export class PhotoEntity {
-  @ApiProperty()
-  id: number;
-
-  @ApiProperty()
-  filename: string;
-
-  @ApiProperty()
-  mimetype: string;
-
-  @ApiProperty()
-  size: number;
-}
+import { CommentEntity } from 'src/comments/entities/comment.entity';
+import { LikeEntity } from 'src/likes/entities/like.entity';
+import { PhotoEntity } from 'src/photos/entities/photo.entity';
 
 export class PostEntity {
   @ApiProperty()
@@ -29,4 +18,10 @@ export class PostEntity {
 
   @ApiProperty({ type: PhotoEntity })
   Photo: PhotoEntity;
+
+  @ApiProperty({ type: [CommentEntity] })
+  Comment: CommentEntity[];
+
+  @ApiProperty({ type: [LikeEntity] })
+  Like: LikeEntity[];
 }

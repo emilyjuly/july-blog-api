@@ -20,6 +20,7 @@ CREATE TABLE "Post" (
     "caption" TEXT,
     "photoId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
+    "username" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
