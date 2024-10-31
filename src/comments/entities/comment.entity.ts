@@ -12,4 +12,7 @@ export class CommentEntity {
 
   @ApiProperty()
   userId: number;
+
+  @ApiProperty()
+  username: string;
 }

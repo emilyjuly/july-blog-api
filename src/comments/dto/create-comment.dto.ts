@@ -9,4 +9,7 @@ export class CreateCommentDto {
 
   @ApiProperty({ required: true })
   userId: number;
+
+  @ApiProperty({ required: true })
+  username: string;
 }
