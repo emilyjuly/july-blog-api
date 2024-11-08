@@ -12,7 +12,13 @@ export class PostsService {
   }
 
   findAll() {
-    return this.prisma.post.findMany();
+    return this.prisma.post.findMany({
+      include: {
+        Photo: true,
+        Comments: true,
+        Likes: true,
+      },
+    });
   }
 
   findByUserId(userId: number) {
@@ -31,6 +37,10 @@ export class PostsService {
       where: { id },
       data: updatePostDto,
     });
+  }
+
+  removeByPhotoId(photoId: number) {
+    return this.prisma.post.delete({ where: { photoId } });
   }
 
   remove(id: number) {

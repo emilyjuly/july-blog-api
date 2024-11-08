@@ -17,6 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PostEntity } from './entities/post.entity';
+import { Public } from 'src/decorators/public.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Posts')
@@ -30,6 +31,7 @@ export class PostsController {
     return this.postsService.create(createPostDto);
   }
 
+  @Public()
   @Get()
   @ApiOkResponse({ type: PostEntity, isArray: true })
   findAll() {
@@ -51,6 +53,6 @@ export class PostsController {
   @Delete(':id')
   @ApiOkResponse({ type: PostEntity })
   remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+    return this.postsService.removeByPhotoId(+id);
   }
 }

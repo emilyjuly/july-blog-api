@@ -72,7 +72,8 @@ export class PhotosController {
 
   @Delete(':id')
   @ApiOkResponse({ type: PhotoEntity })
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
+    await this.postsService.removeByPhotoId(+id);
     return this.photosService.remove(+id);
   }
 }
